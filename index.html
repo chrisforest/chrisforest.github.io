@@ -89,13 +89,13 @@
 
 
   <div class="entry-content"><p>  这两天主要是在进行从oracle数据库到mongoDB数据库的迁移工作。小表可以顺利插入，但是那张大表遇到了问题。首先我尝试了使用etl工具进行数据迁移。出现问题后自己写程序进行数据迁移，但是问题还没解决。
-关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。
+关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。<br/>
 <img src="/images/20150624/pic1.jpg" alt="image" /><br/>
   然后分别编辑输入输出，编辑oracle数据库:
 <img src="/images/20150624/pic2.jpg" alt="image" /><br/>
   编辑mongoDB数据库:
 <img src="/images/20150624/pic3.jpg" alt="image" /><br/>
-  编辑完成后开始运行，但是运行到84万多条数据的时候就报错了：
+  编辑完成后开始运行，但是运行到84万多条数据的时候就报错了：<br/>
 <img src="/images/20150624/pic4.png" alt="image" /><br/>
   之后编写了程序进行数据迁移，结果在83万多数据的时候出问题，卡住不动了，没有终止运行，没有报错。
   分析原因一开始我以为是mongodb的cursor关闭了，因为看文档说mongodb的cursor默认十分钟关闭，而spoon迁移大概10分钟的时候停了。因为spoon没有改相关项的选项，所以后来打算自己写程序，然而自己写程序后，发现用不到mongodb的cursor。可能的原因是数据一次读取过多，因为2次出错读取的数据差不多多（83万和84万），所以下一步会尝试分多次读取数据，比如50万数据一读。
