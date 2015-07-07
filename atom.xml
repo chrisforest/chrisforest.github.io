@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://chrisforest.github.io/atom.xml" rel="self"/>
   <link href="http://chrisforest.github.io/"/>
-  <updated>2015-07-07T23:56:11+08:00</updated>
+  <updated>2015-07-08T00:53:39+08:00</updated>
   <id>http://chrisforest.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -14,41 +14,115 @@
 
   
   <entry>
+    <title type="html"><![CDATA[如何运行应用]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/07/20150613/"/>
+    <updated>2015-07-07T23:58:45+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/07/20150613</id>
+    <content type="html"><![CDATA[<h6>在sql命令行中</h6>
+
+<p>创建2个新用户，east和etl密码是east和etl</p>
+
+<pre><code>create user east identified by east;
+create user etl identified by etl;
+</code></pre>
+
+<p>赋予dba权限</p>
+
+<pre><code>grant dba to east;
+grant dba to etl;
+</code></pre>
+
+<h6>在命令行中</h6>
+
+<p>导入数据</p>
+
+<pre><code>imp east/east@localhost/xe fromuser=east touser=east log=no file=（dmp的路径）/east.dmp
+imp etl/etl@localhost/xe fromuser=etl touser=etl  log=no file=（dmp的路径）/etl.dmp
+</code></pre>
+
+<h6>报错:ora-12899</h6>
+
+<p>在插入数据库的时候报错</p>
+
+<pre><code>IMP-00019: 由于 ORACLE 错误 12899 而拒绝行
+IMP-00003: 遇到 ORACLE 错误 12899
+ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最大值: 20)
+</code></pre>
+
+<p>原因是数据库的字库问题，更换字库后解决，在sql命令行中输入</p>
+
+<pre><code>SHUTDOWN IMMEDIATE 
+STARTUP MOUNT
+ALTER SYSTEM ENABLE RESTRICTED SESSION
+ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
+ALTER SYSTEM SET AQ_TM_PROCESSES=0
+ALTER DATABASE OPEN
+ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
+SHUTDOWN IMMEDIATE
+STARTUP
+</code></pre>
+
+<p>重新插入即可</p>
+
+<h6>在fitetl程序中</h6>
+
+<p>修改com.fitech.model.etl. service.hsyh.FitechRpt.etl.sysLog.properties
+修改db_url=east/east@xe
+修改server_ip=localhost
+修改server_port=1521</p>
+
+<p>修改applicationContext.xml
+<img src="http://chrisforest.github.io/images/20150613/1.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150613/2.png" alt="image" />
+共有2段，将192.168.0.89:1521:orcl修改为localhost:1521:xe</p>
+
+<p>修改com.fitech.model.etl.service.hsyh.ExportData.java
+此为主方法，
+修改任务id，修改为vo.setTaskId(61);
+修改日期，修改为vo.setTaskTerm(&ldquo;2014-12-31&rdquo;);</p>
+
+<h6>运行后无报文生成</h6>
+
+<p>原因是base_rpt_info表中有一行多余数据。打开east.base_rpt_info这张表，找到rpt_name为交易流水的行，有2行，把其中base_rpt_id为yjbz_00701的那行，也就是上面一行，删了。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[应用执行流程]]></title>
     <link href="http://chrisforest.github.io/blog/2015/07/07/ying-yong-zhi-xing-liu-cheng/"/>
     <updated>2015-07-07T23:02:16+08:00</updated>
     <id>http://chrisforest.github.io/blog/2015/07/07/ying-yong-zhi-xing-liu-cheng</id>
     <content type="html"><![CDATA[<p>1、\fitetl\src\com\fitech\model\etl\service\hsyh\ExportData.java
-<img src="" title="/images/20150612/1.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/1.png" alt="image" />
 程序入口，ETLConductExportService处理主要内容。</p>
 
 <p>2、\fitetl\src\com\fitech\model\etl\service\hsyh\ETLConductExportService.java
-<img src="" title="/images/20150612/2.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/2.png" alt="image" />
 主要功能在方法writerUploadFile中实现，由于采用oracle数据库，调用createRptFile生成报文。</p>
 
 <p>3、\fitetl\src\com\fitech\model\etl\service\hsyh\FitechRpt\service\impl\RptOprServiceImpl.java
-<img src="" title="/images/20150612/3.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/3.png" alt="image" />
 全部报文，调用方法creRptFileAll</p>
 
-<p><img src="" title="/images/20150612/4.png" alt="image" />
+<p><img src="http://chrisforest.github.io/images/20150612/4.png" alt="image" />
 调用方法creRpfFileSgl</p>
 
-<p><img src="" title="/images/20150612/5.png" alt="image" />
-<img src="" title="/images/20150612/6.png" alt="image" />
-<img src="" title="/images/20150612/7.png" alt="image" />
-<img src="" title="/images/20150612/8.png" alt="image" />
+<p><img src="http://chrisforest.github.io/images/20150612/5.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/6.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/7.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/8.png" alt="image" />
 每10000行创建一个新的线程，线程RptExpOprThread用来生成报文。</p>
 
 <p>4、\fitech\model\etl\service\hsyh\FitechRpt\util\RptExpOprThread.java
-<img src="" title="/images/20150612/9.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/9.png" alt="image" />
 调用方法createSplitRpt</p>
 
 <p>5、\fitetl\src\com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java
-<img src="" title="/images/20150612/10.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/10.png" alt="image" />
 调用方法createRptFile</p>
 
-<p><img src="" title="/images/20150612/11.png" alt="image" />
-<img src="" title="/images/20150612/11.png" alt="image" />
+<p><img src="http://chrisforest.github.io/images/20150612/11.png" alt="image" />
+<img src="http://chrisforest.github.io/images/20150612/12.png" alt="image" />
 生成报文文件</p>
 ]]></content>
   </entry>
