@@ -88,36 +88,36 @@
 
 
   <div class="entry-content"><p>1、\fitetl\src\com\fitech\model\etl\service\hsyh\ExportData.java
-<img src="" title="images/20150612/1.png" alt="image" />
+<img src="" title="/images/20150612/1.png" alt="image" />
 程序入口，ETLConductExportService处理主要内容。</p>
 
 <p>2、\fitetl\src\com\fitech\model\etl\service\hsyh\ETLConductExportService.java
-<img src="" title="images/20150612/2.png" alt="image" />
+<img src="" title="/images/20150612/2.png" alt="image" />
 主要功能在方法writerUploadFile中实现，由于采用oracle数据库，调用createRptFile生成报文。</p>
 
 <p>3、\fitetl\src\com\fitech\model\etl\service\hsyh\FitechRpt\service\impl\RptOprServiceImpl.java
-<img src="" title="images/20150612/3.png" alt="image" />
+<img src="" title="/images/20150612/3.png" alt="image" />
 全部报文，调用方法creRptFileAll</p>
 
-<p><img src="" title="images/20150612/4.png" alt="image" />
+<p><img src="" title="/images/20150612/4.png" alt="image" />
 调用方法creRpfFileSgl</p>
 
-<p><img src="" title="images/20150612/5.png" alt="image" />
-<img src="" title="images/20150612/6.png" alt="image" />
-<img src="" title="images/20150612/7.png" alt="image" />
-<img src="" title="images/20150612/8.png" alt="image" />
+<p><img src="" title="/images/20150612/5.png" alt="image" />
+<img src="" title="/images/20150612/6.png" alt="image" />
+<img src="" title="/images/20150612/7.png" alt="image" />
+<img src="" title="/images/20150612/8.png" alt="image" />
 每10000行创建一个新的线程，线程RptExpOprThread用来生成报文。</p>
 
 <p>4、\fitech\model\etl\service\hsyh\FitechRpt\util\RptExpOprThread.java
-<img src="" title="images/20150612/9.png" alt="image" />
+<img src="" title="/images/20150612/9.png" alt="image" />
 调用方法createSplitRpt</p>
 
 <p>5、\fitetl\src\com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java
-<img src="" title="images/20150612/10.png" alt="image" />
+<img src="" title="/images/20150612/10.png" alt="image" />
 调用方法createRptFile</p>
 
-<p><img src="" title="images/20150612/11.png" alt="image" />
-<img src="" title="images/20150612/11.png" alt="image" />
+<p><img src="" title="/images/20150612/11.png" alt="image" />
+<img src="" title="/images/20150612/11.png" alt="image" />
 生成报文文件</p>
 </div>
   
