@@ -5,13 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>如何运行应用 - My Octopress Blog</title>
+  <title>应用在本地数据库在远程的profile - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="在sql命令行中 创建2个新用户，east和etl密码是east和etl create user east identified by east;
-create user etl identified by etl; 赋予dba权限 grant dba to east;
-grant dba to &hellip;">
+  <meta name="description" content="采用插装log输出 在sql语句和报文生成的前后插入了计时语句，这是某次操作的结果总结。
+总共耗时386秒
+其中超过1秒的操作
+1、 对YJBZ_00701_B0349H245010001计数。由于表超过3M行，总共耗时8.630秒。
+2、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +22,7 @@ grant dba to &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/07/20150613/">
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150619/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -70,7 +72,7 @@ grant dba to &hellip;">
   
   <header>
     
-      <h1 class="entry-title">如何运行应用</h1>
+      <h1 class="entry-title">应用在本地数据库在远程的profile</h1>
     
     
       <p class="meta">
@@ -79,83 +81,33 @@ grant dba to &hellip;">
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T14:57:41+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:57 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h6>在sql命令行中</h6>
+<div class="entry-content"><h6>采用插装log输出</h6>
 
-<p>创建2个新用户，east和etl密码是east和etl</p>
+<p>在sql语句和报文生成的前后插入了计时语句，这是某次操作的结果总结。
+总共耗时386秒
+其中超过1秒的操作
+1、    对YJBZ_00701_B0349H245010001计数。由于表超过3M行，总共耗时8.630秒。
+2、    查询遍历YJBZ_00701_B0349H245010001内容。每10000条数据新建一个线程查，线程上查找大约花费几百毫秒，报文生成花费几毫秒，总共300多个线程，一共花费262.266秒。
+3、    将报文合并，总共花费110.731秒
+三项加起来384.587秒，占总时间的99.6%</p>
 
-<pre><code>create user east identified by east;
-create user etl identified by etl;
-</code></pre>
+<h6>采用visualvm</h6>
 
-<p>赋予dba权限</p>
-
-<pre><code>grant dba to east;
-grant dba to etl;
-</code></pre>
-
-<h6>在命令行中</h6>
-
-<p>导入数据</p>
-
-<pre><code>imp east/east@localhost/xe fromuser=east touser=east log=no file=（dmp的路径）/east.dmp
-imp etl/etl@localhost/xe fromuser=etl touser=etl  log=no file=（dmp的路径）/etl.dmp
-</code></pre>
-
-<h6>报错:ora-12899</h6>
-
-<p>在插入数据库的时候报错</p>
-
-<pre><code>IMP-00019: 由于 ORACLE 错误 12899 而拒绝行
-IMP-00003: 遇到 ORACLE 错误 12899
-ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最大值: 20)
-</code></pre>
-
-<p>原因是数据库的字库问题，更换字库后解决，参考<a href="http://blog.chinaunix.net/uid-10951-id-1762312.html">http://blog.chinaunix.net/uid-10951-id-1762312.html</a> ，在sql命令行中输入</p>
-
-<pre><code>SHUTDOWN IMMEDIATE 
-STARTUP MOUNT
-ALTER SYSTEM ENABLE RESTRICTED SESSION
-ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
-ALTER SYSTEM SET AQ_TM_PROCESSES=0
-ALTER DATABASE OPEN
-ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
-SHUTDOWN IMMEDIATE
-STARTUP
-</code></pre>
-
-<p>重新插入即可</p>
-
-<h6>在fitetl程序中</h6>
-
-<p>修改com.fitech.model.etl. service.hsyh.FitechRpt.etl.sysLog.properties
-修改db_url=east/east@xe
-修改server_ip=localhost
-修改server_port=1521</p>
-
-<p>修改applicationContext.xml
-<img src="/images/20150613/1.png" alt="image" />
-<img src="/images/20150613/2.png" alt="image" />
-共有2段，将192.168.0.89:1521:orcl修改为localhost:1521:xe</p>
-
-<p>修改com.fitech.model.etl.service.hsyh.ExportData.java
-此为主方法，
-修改任务id，修改为vo.setTaskId(61);
-修改日期，修改为vo.setTaskTerm(&ldquo;2014-12-31&rdquo;);</p>
-
-<h6>运行后无报文生成</h6>
-
-<p>原因是base_rpt_info表中有一行多余数据。打开east.base_rpt_info这张表，找到rpt_name为交易流水的行，有2行，把其中base_rpt_id为yjbz_00701的那行，也就是上面一行，删了。</p>
-
-<h6>运行结果</h6>
-
-<p>成功，大约19分钟。</p>
+<p>没有成功。试了几次，每次中途就没响应了。
+<img src="/images/20150619/1.png" alt="image" />
+这是失去响应之前的截图
+第一位是org.quartz.simpl.SimpleThreadPool$WorkerThread.run()
+第二位是org.quartz.core.QuartzSchedulerThread.run()
+第三位是org.apache.log4j.Category.callAppenders(org.apache.log4j.spi.LoggingEvent)
+第四位是org.hibernate.loader.Loader.doQuery(org.hibernate.engine.SessionImplementor, org.hibernate.engine.QueryParameters, boolean)
+从第五位开始数值就很小了。</p>
 </div>
 
 
@@ -171,7 +123,7 @@ STARTUP
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T14:57:41+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:57 pm</span></time>
       
 
 
@@ -179,7 +131,7 @@ STARTUP
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/07/20150613/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/07/20150613/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150619/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150619/" >Tweet</a>
   
   
   
@@ -188,10 +140,10 @@ STARTUP
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/07/ying-yong-zhi-xing-liu-cheng/" title="Previous Post: 应用执行流程">&laquo; 应用执行流程</a>
+        <a class="basic-alignment left" href="/blog/2015/07/08/20150618/" title="Previous Post: 在远程服务器上运行exportData">&laquo; 在远程服务器上运行exportData</a>
       
       
-        <a class="basic-alignment right" href="/blog/2015/07/08/20150616/" title="Next Post: exportData使用的sql查询">exportData使用的sql查询 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/07/08/20150620/" title="Next Post: 应用数据库都在远程的profile">应用数据库都在远程的profile &raquo;</a>
       
     </p>
   </footer>

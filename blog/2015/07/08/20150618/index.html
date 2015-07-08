@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>如何运行应用 - My Octopress Blog</title>
+  <title>在远程服务器上运行exportData - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="在sql命令行中 创建2个新用户，east和etl密码是east和etl create user east identified by east;
-create user etl identified by etl; 赋予dba权限 grant dba to east;
-grant dba to &hellip;">
+  <meta name="description" content="将数据库放到服务器上 事先的工作 已有一个docker容器oracle11g xe，22端口映射到32772，1521端口映射到32771，8080端口映射到32770。 putty 登录114.212.189.143 port32772 sqlplus sys/oracle as sysdba &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ grant dba to &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/07/20150613/">
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150618/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -70,7 +68,7 @@ grant dba to &hellip;">
   
   <header>
     
-      <h1 class="entry-title">如何运行应用</h1>
+      <h1 class="entry-title">在远程服务器上运行exportData</h1>
     
     
       <p class="meta">
@@ -79,47 +77,29 @@ grant dba to &hellip;">
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T14:03:04+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:03 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h6>在sql命令行中</h6>
+<div class="entry-content"><h5>将数据库放到服务器上</h5>
 
-<p>创建2个新用户，east和etl密码是east和etl</p>
+<h6>事先的工作</h6>
 
-<pre><code>create user east identified by east;
+<p>已有一个docker容器oracle11g xe，22端口映射到32772，1521端口映射到32771，8080端口映射到32770。</p>
+
+<h6>putty</h6>
+
+<p>登录114.212.189.143 port32772</p>
+
+<pre><code>sqlplus sys/oracle as sysdba
+create user east identified by east;
 create user etl identified by etl;
-</code></pre>
-
-<p>赋予dba权限</p>
-
-<pre><code>grant dba to east;
+grant dba to east;
 grant dba to etl;
-</code></pre>
-
-<h6>在命令行中</h6>
-
-<p>导入数据</p>
-
-<pre><code>imp east/east@localhost/xe fromuser=east touser=east log=no file=（dmp的路径）/east.dmp
-imp etl/etl@localhost/xe fromuser=etl touser=etl  log=no file=（dmp的路径）/etl.dmp
-</code></pre>
-
-<h6>报错:ora-12899</h6>
-
-<p>在插入数据库的时候报错</p>
-
-<pre><code>IMP-00019: 由于 ORACLE 错误 12899 而拒绝行
-IMP-00003: 遇到 ORACLE 错误 12899
-ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最大值: 20)
-</code></pre>
-
-<p>原因是数据库的字库问题，更换字库后解决，参考<a href="http://blog.chinaunix.net/uid-10951-id-1762312.html">http://blog.chinaunix.net/uid-10951-id-1762312.html</a> ，在sql命令行中输入</p>
-
-<pre><code>SHUTDOWN IMMEDIATE 
+shutdown immediate
 STARTUP MOUNT
 ALTER SYSTEM ENABLE RESTRICTED SESSION
 ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
@@ -130,32 +110,44 @@ SHUTDOWN IMMEDIATE
 STARTUP
 </code></pre>
 
-<p>重新插入即可</p>
+<h6>psftp</h6>
 
-<h6>在fitetl程序中</h6>
+<p>open 114.212.189.143 32772</p>
 
-<p>修改com.fitech.model.etl. service.hsyh.FitechRpt.etl.sysLog.properties
-修改db_url=east/east@xe
-修改server_ip=localhost
-修改server_port=1521</p>
+<pre><code>put 路径\east.dmp
+put 路径\east.dmp
+</code></pre>
 
-<p>修改applicationContext.xml
-<img src="/images/20150613/1.png" alt="image" />
-<img src="/images/20150613/2.png" alt="image" />
-共有2段，将192.168.0.89:1521:orcl修改为localhost:1521:xe</p>
+<h5>将应用放到服务器上</h5>
 
-<p>修改com.fitech.model.etl.service.hsyh.ExportData.java
-此为主方法，
-修改任务id，修改为vo.setTaskId(61);
-修改日期，修改为vo.setTaskTerm(&ldquo;2014-12-31&rdquo;);</p>
+<h6>事先的工作</h6>
 
-<h6>运行后无报文生成</h6>
+<p>已有一个docker容器java8，id是fbbf&hellip;
+将exportData打成jar包，取名ccc.jar</p>
 
-<p>原因是base_rpt_info表中有一行多余数据。打开east.base_rpt_info这张表，找到rpt_name为交易流水的行，有2行，把其中base_rpt_id为yjbz_00701的那行，也就是上面一行，删了。</p>
+<h6>psftp</h6>
 
-<h6>运行结果</h6>
+<pre><code>open 114.212.189.143 22
+put ccc.jar
+</code></pre>
 
-<p>成功，大约19分钟。</p>
+<h6>putty</h6>
+
+<p>登录114.212.189.143 port22</p>
+
+<pre><code>sudo docker exec -ti fbbf /bin/bash
+java -jar ccc.jar
+</code></pre>
+
+<h6>应用卡住，然后报错</h6>
+
+<pre><code>org.xml.sax.SAXParseException: schema_reference.4: Failed to read schema document 'http://www.springframework.org/schema/beans/spring-beans-2.0.xsd', because 1) could not find the document; 2) the document could not be read; 3) the root element of the document is not &lt;xsd:schema&gt;.
+</code></pre>
+
+<p>参考<a href="http://blog.csdn.net/bluishglc/article/details/7596118">http://blog.csdn.net/bluishglc/article/details/7596118</a> ，spring xml配置文件中指定的xsd文件读取不到了，原因是reference中不同jar包对spring-beans-2.0.xsd的多次定义。
+spring在加载xsd文件时总是先试图在本地查找xsd文件(spring的jar包中已经包含了所有版本的xsd文件)，如果没有找到，才会转向去URL指定的路径下载。
+dwr.jar中无用的xsd定义覆盖了有用的定义，导致需要上网加载xsd文件。先前本机由于联网，该问题没有暴露，容器没有网络连接，所以报错。
+解决方法，删除dwr.jar包。目前exportData正常运行，对以后可能的影响未知。</p>
 </div>
 
 
@@ -171,7 +163,7 @@ STARTUP
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T14:03:04+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:03 pm</span></time>
       
 
 
@@ -179,7 +171,7 @@ STARTUP
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/07/20150613/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/07/20150613/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150618/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150618/" >Tweet</a>
   
   
   
@@ -188,10 +180,10 @@ STARTUP
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/07/ying-yong-zhi-xing-liu-cheng/" title="Previous Post: 应用执行流程">&laquo; 应用执行流程</a>
+        <a class="basic-alignment left" href="/blog/2015/07/08/20150616/" title="Previous Post: exportData使用的sql查询">&laquo; exportData使用的sql查询</a>
       
       
-        <a class="basic-alignment right" href="/blog/2015/07/08/20150616/" title="Next Post: exportData使用的sql查询">exportData使用的sql查询 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/07/08/20150619/" title="Next Post: 应用在本地数据库在远程的profile">应用在本地数据库在远程的profile &raquo;</a>
       
     </p>
   </footer>

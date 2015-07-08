@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>应用数据库都在远程的profile - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="把客户端也放到远程上了。单位是秒。测到的最小值是63秒。
+测试了一些数据，列代表所少条数据分一线程，行代表一次读多少数据 500 1k 2k 5k 10k 20k 50k 100k 500 79 *** *** *** *** *** *** *** 1k 67 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150620/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="chrisforest.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">应用数据库都在远程的profile</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-08T15:04:50+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:04 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>把客户端也放到远程上了。单位是秒。测到的最小值是63秒。
+测试了一些数据，列代表所少条数据分一线程，行代表一次读多少数据</p>
+
+<table>
+   <tr>
+      <td></td>
+      <td>500</td>
+      <td>1k</td>
+      <td>2k</td>
+      <td>5k</td>
+      <td>10k</td>
+      <td>20k</td>
+      <td>50k</td>
+      <td>100k</td>
+   </tr>
+   <tr>
+      <td>500</td>
+      <td>79</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>1k</td>
+      <td></td>
+      <td>67</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>2k</td>
+      <td></td>
+      <td></td>
+      <td>67</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>5k</td>
+      <td></td>
+      <td></td>
+      <td>72</td>
+      <td>63</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>10k</td>
+      <td>75</td>
+      <td>66</td>
+      <td>69</td>
+      <td>66</td>
+      <td>63</td>
+      <td>***</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>20k</td>
+      <td></td>
+      <td></td>
+      <td>66</td>
+      <td></td>
+      <td></td>
+      <td>65</td>
+      <td>***</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>50k</td>
+      <td></td>
+      <td></td>
+      <td>64</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>68</td>
+      <td>***</td>
+   </tr>
+   <tr>
+      <td>100k</td>
+      <td></td>
+      <td></td>
+      <td>64</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>77</td>
+   </tr>
+   <tr>
+      <td></td>
+   </tr>
+</table>
+
+
+<p>具体数据：
+500一线程500分一段
+共耗时79秒
+之前的3步各耗时0.826秒，60.961秒，16.697秒</p>
+
+<p>1000一线程1000分一段
+共耗时67秒
+之前的3步各耗时0.825秒，53.675秒，10.948秒</p>
+
+<p>2000一线程2000分一段
+共耗时67秒
+之前的3步各耗时1.014秒，52.836秒，11.675秒</p>
+
+<p>5000一线程2000分一段
+共耗时72秒
+之前的3步各耗时0.8秒，59.145秒，10.829秒</p>
+
+<p>5000一线程5000分一段
+共耗时63秒
+之前的3步各耗时0.814秒，45.701秒，16.189秒</p>
+
+<p>10000一线程500分一段
+总耗时75秒
+之前的3步各耗时0.817秒，61.304秒，11.118秒</p>
+
+<p>10000一线程1000分一段
+总耗时66秒
+之前的3步各耗时0.840秒，53.079秒，11.118秒</p>
+
+<p>10000一线程2000分一段
+总耗时69秒
+之前的3步各耗时0.949秒，50.165秒，16.248秒</p>
+
+<p>10000一线程5000分一段
+总耗时66秒
+之前的3步各耗时0.815秒，47.927秒，16.156秒</p>
+
+<p>10000一线程10000分一段
+共耗时63秒
+之前的3步各耗时0.824秒，44.952秒，16.265秒</p>
+
+<p>20000一线程2000分一段
+总耗时66秒
+之前的3步各耗时0.809秒，50.084秒，11.225秒</p>
+
+<p>20000一线程20000分一段
+总耗时65秒
+之前的3步各耗时0.824秒，45.867秒，16.228秒</p>
+
+<p>50000一线程2000分一段
+总耗时64秒
+之前的3步各耗时0.807秒，50.227秒，10.895秒</p>
+
+<p>50000一线程50000分一段
+共耗时68秒
+之前的3步各耗时1.007秒，49.458秒，16.054秒</p>
+
+<p>100000一线程2000分一段
+总耗时64秒
+之前的3步各耗时1.130秒，50.450秒，10.815秒</p>
+
+<p>100000一线程100000分一段
+共耗时77秒
+之前的3步各耗时1.472秒，65.458秒，8.054秒</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-08T15:04:50+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:04 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150620/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150620/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/08/20150619/" title="Previous Post: 应用在本地数据库在远程的profile">&laquo; 应用在本地数据库在远程的profile</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150620/">应用数据库都在远程的profile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150619/">应用在本地数据库在远程的profile</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150618/">在远程服务器上运行exportData</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150616/">exportData使用的sql查询</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/07/20150613/">如何运行应用</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
