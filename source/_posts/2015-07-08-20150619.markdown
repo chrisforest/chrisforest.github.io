@@ -1,0 +1,26 @@
+---
+layout: post
+title: "应用在本地数据库在远程的profile"
+date: 2015-07-08 14:57:41 +0800
+comments: true
+categories: 
+---
+
+######采用插装log输出
+在sql语句和报文生成的前后插入了计时语句，这是某次操作的结果总结。
+总共耗时386秒
+其中超过1秒的操作
+1、	对YJBZ_00701_B0349H245010001计数。由于表超过3M行，总共耗时8.630秒。
+2、	查询遍历YJBZ_00701_B0349H245010001内容。每10000条数据新建一个线程查，线程上查找大约花费几百毫秒，报文生成花费几毫秒，总共300多个线程，一共花费262.266秒。
+3、	将报文合并，总共花费110.731秒
+三项加起来384.587秒，占总时间的99.6%
+
+######采用visualvm
+没有成功。试了几次，每次中途就没响应了。
+![image](/images/20150619/1.png)
+这是失去响应之前的截图
+第一位是org.quartz.simpl.SimpleThreadPool$WorkerThread.run()
+第二位是org.quartz.core.QuartzSchedulerThread.run()
+第三位是org.apache.log4j.Category.callAppenders(org.apache.log4j.spi.LoggingEvent)
+第四位是org.hibernate.loader.Loader.doQuery(org.hibernate.engine.SessionImplementor, org.hibernate.engine.QueryParameters, boolean)
+从第五位开始数值就很小了。

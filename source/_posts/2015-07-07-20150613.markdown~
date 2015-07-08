@@ -29,7 +29,7 @@ categories:
 	IMP-00019: 由于 ORACLE 错误 12899 而拒绝行
 	IMP-00003: 遇到 ORACLE 错误 12899
 	ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最大值: 20)
-原因是数据库的字库问题，更换字库后解决，参考http://blog.chinaunix.net/uid-10951-id-1762312.html ，在sql命令行中输入
+原因是数据库的字库问题，更换字库后解决，在sql命令行中输入
 
 	SHUTDOWN IMMEDIATE 
 	STARTUP MOUNT

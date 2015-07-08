@@ -1,0 +1,54 @@
+---
+layout: post
+title: "exportData使用的sql查询"
+date: 2015-07-08 13:33:18 +0800
+comments: true
+categories: 
+---
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56
+
+	from EtlTaskInfo e where e.taskId= 61
+表ETL_TASK_INFO
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:59
+
+	select config_value from east.sys_config where config_key='need_hand_export'
+表SYS_CONFIG
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:68
+
+	select base_rpt_id,model_name,main_type,rpt_en_name from east.base_rpt_info where rpt_name='交易流水'
+表BASE_RPT_INFO
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:73
+
+	select count(0) from east.YJBZ_00701_B0349H245010001
+表YJBZ_00701_B0349H245010001
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:78
+
+	delete from east.YJBZ_ETL_CHECK where TASK_NAME='交易流水' and TERM='20141231'
+表YJBZ_ETL_CHECK
+
+com/fitech/model/etl/service/hsyh/ETLConductExportService.java:108
+
+	insert into east.convert_log(log_name,log_message,log_time,log_term) values (?,?,?,?)
+表CONVERT_LOG
+
+com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:248
+
+	SELECT FIELD_EN_NAME,FIELD_TYPE FROM east.BASE_FIELD_INFO FIELD_INFO WHERE FIELD_INFO.BASE_RPT_ID = 'yjbz_00701' ORDER BY FIELD_INFO.ORDER_ID ASC
+表BASE_FIELD_INFO
+
+com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:269
+
+	select count(1) from east.YJBZ_00701_B0349H245010001
+表YJBZ_00701_B0349H245010001
+
+com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java:438
+
+	select HXJYLSH,ZJYLSH,BCXH,JYRQ,YXJGDM,NBJGH,JRXKZH,MXKMBH,JYSJ,JZRQ,JZSJ,JYJGMC,JYZH,JYHM,JYXTMC,DFXH,DFJGMC,DFZH,DFHM,JYJE,ZHYE,JDBZ,XZBZ,BZ,YWLX,JYLX,JYQD,JYJZMC,JYJZH,CZGYH,GYLSH,FHGYH,ZY,ZPZZL,ZPZH,FPZZL,FPZH,CBMBZ,SJC,ZHBZ,KXHBZ,CJRQ
+	from YJBZ_00701_B0349H245010001
+	where  num>=begIndex and num <+(begIndex+count)
+表YJBZ_00701_B0349H245010001
