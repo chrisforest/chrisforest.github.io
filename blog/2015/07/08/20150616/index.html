@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>如何运行应用 - My Octopress Blog</title>
+  <title>exportData使用的sql查询 - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="在sql命令行中 创建2个新用户，east和etl密码是east和etl create user east identified by east;
-create user etl identified by etl; 赋予dba权限 grant dba to east;
-grant dba to &hellip;">
+  <meta name="description" content="com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56 from EtlTaskInfo e where e.taskId= 61 表ETL_TASK_INFO com/fitech/model/etl/service/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@ grant dba to &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/07/20150613/">
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150616/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -70,7 +68,7 @@ grant dba to &hellip;">
   
   <header>
     
-      <h1 class="entry-title">如何运行应用</h1>
+      <h1 class="entry-title">exportData使用的sql查询</h1>
     
     
       <p class="meta">
@@ -79,79 +77,77 @@ grant dba to &hellip;">
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h6>在sql命令行中</h6>
+<div class="entry-content"><p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56</p>
 
-<p>创建2个新用户，east和etl密码是east和etl</p>
-
-<pre><code>create user east identified by east;
-create user etl identified by etl;
+<pre><code>from EtlTaskInfo e where e.taskId= 61
 </code></pre>
 
-<p>赋予dba权限</p>
+<p>表ETL_TASK_INFO</p>
 
-<pre><code>grant dba to east;
-grant dba to etl;
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:59</p>
+
+<pre><code>select config_value from east.sys_config where config_key='need_hand_export'
 </code></pre>
 
-<h6>在命令行中</h6>
+<p>表SYS_CONFIG</p>
 
-<p>导入数据</p>
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:68</p>
 
-<pre><code>imp east/east@localhost/xe fromuser=east touser=east log=no file=（dmp的路径）/east.dmp
-imp etl/etl@localhost/xe fromuser=etl touser=etl  log=no file=（dmp的路径）/etl.dmp
+<pre><code>select base_rpt_id,model_name,main_type,rpt_en_name from east.base_rpt_info where rpt_name='交易流水'
 </code></pre>
 
-<h6>报错:ora-12899</h6>
+<p>表BASE_RPT_INFO</p>
 
-<p>在插入数据库的时候报错</p>
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:73</p>
 
-<pre><code>IMP-00019: 由于 ORACLE 错误 12899 而拒绝行
-IMP-00003: 遇到 ORACLE 错误 12899
-ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最大值: 20)
+<pre><code>select count(0) from east.YJBZ_00701_B0349H245010001
 </code></pre>
 
-<p>原因是数据库的字库问题，更换字库后解决，在sql命令行中输入</p>
+<p>表YJBZ_00701_B0349H245010001</p>
 
-<pre><code>SHUTDOWN IMMEDIATE 
-STARTUP MOUNT
-ALTER SYSTEM ENABLE RESTRICTED SESSION
-ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
-ALTER SYSTEM SET AQ_TM_PROCESSES=0
-ALTER DATABASE OPEN
-ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
-SHUTDOWN IMMEDIATE
-STARTUP
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:78</p>
+
+<pre><code>delete from east.YJBZ_ETL_CHECK where TASK_NAME='交易流水' and TERM='20141231'
 </code></pre>
 
-<p>重新插入即可</p>
+<p>表YJBZ_ETL_CHECK</p>
 
-<h6>在fitetl程序中</h6>
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:108</p>
 
-<p>修改com.fitech.model.etl. service.hsyh.FitechRpt.etl.sysLog.properties
-修改db_url=east/east@xe
-修改server_ip=localhost
-修改server_port=1521</p>
+<pre><code>insert into east.convert_log(log_name,log_message,log_time,log_term) values (?,?,?,?)
+</code></pre>
 
-<p>修改applicationContext.xml
-<img src="/images/20150613/1.png" alt="image" />
-<img src="/images/20150613/2.png" alt="image" />
-共有2段，将192.168.0.89:1521:orcl修改为localhost:1521:xe</p>
+<p>表CONVERT_LOG</p>
 
-<p>修改com.fitech.model.etl.service.hsyh.ExportData.java
-此为主方法，
-修改任务id，修改为vo.setTaskId(61);
-修改日期，修改为vo.setTaskTerm(&ldquo;2014-12-31&rdquo;);</p>
+<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:248</p>
 
-<h6>运行后无报文生成</h6>
+<pre><code>SELECT FIELD_EN_NAME,FIELD_TYPE FROM east.BASE_FIELD_INFO FIELD_INFO WHERE FIELD_INFO.BASE_RPT_ID = 'yjbz_00701' ORDER BY FIELD_INFO.ORDER_ID ASC
+</code></pre>
 
-<p>原因是base_rpt_info表中有一行多余数据。打开east.base_rpt_info这张表，找到rpt_name为交易流水的行，有2行，把其中base_rpt_id为yjbz_00701的那行，也就是上面一行，删了。</p>
+<p>表BASE_FIELD_INFO</p>
+
+<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:269</p>
+
+<pre><code>select count(1) from east.YJBZ_00701_B0349H245010001
+</code></pre>
+
+<p>表YJBZ_00701_B0349H245010001</p>
+
+<p>com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java:438</p>
+
+<pre><code>select HXJYLSH,ZJYLSH,BCXH,JYRQ,YXJGDM,NBJGH,JRXKZH,MXKMBH,JYSJ,JZRQ,JZSJ,JYJGMC,JYZH,JYHM,JYXTMC,DFXH,DFJGMC,DFZH,DFHM,JYJE,ZHYE,JDBZ,XZBZ,BZ,YWLX,JYLX,JYQD,JYJZMC,JYJZH,CZGYH,GYLSH,FHGYH,ZY,ZPZZL,ZPZH,FPZZL,FPZH,CBMBZ,SJC,ZHBZ,KXHBZ,CJRQ
+from YJBZ_00701_B0349H245010001
+where  num&gt;=begIndex and num &lt;+(begIndex+count)
+</code></pre>
+
+<p>表YJBZ_00701_B0349H245010001</p>
 </div>
 
 
@@ -167,7 +163,7 @@ STARTUP
 
 
 
-<time class='entry-date' datetime='2015-07-07T23:58:45+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:58 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
       
 
 
@@ -175,7 +171,7 @@ STARTUP
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/07/20150613/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/07/20150613/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150616/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150616/" >Tweet</a>
   
   
   
@@ -184,10 +180,8 @@ STARTUP
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/07/ying-yong-zhi-xing-liu-cheng/" title="Previous Post: 应用执行流程">&laquo; 应用执行流程</a>
+        <a class="basic-alignment left" href="/blog/2015/07/07/20150613/" title="Previous Post: 如何运行应用">&laquo; 如何运行应用</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2015/07/08/20150616/" title="Next Post: exportData使用的sql查询">exportData使用的sql查询 &raquo;</a>
       
     </p>
   </footer>

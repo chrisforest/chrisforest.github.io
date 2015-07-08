@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://chrisforest.github.io/atom.xml" rel="self"/>
   <link href="http://chrisforest.github.io/"/>
-  <updated>2015-07-08T00:53:39+08:00</updated>
+  <updated>2015-07-08T14:00:01+08:00</updated>
   <id>http://chrisforest.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,78 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[exportData使用的sql查询]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/08/20150616/"/>
+    <updated>2015-07-08T13:33:18+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/08/20150616</id>
+    <content type="html"><![CDATA[<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56</p>
+
+<pre><code>from EtlTaskInfo e where e.taskId= 61
+</code></pre>
+
+<p>表ETL_TASK_INFO</p>
+
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:59</p>
+
+<pre><code>select config_value from east.sys_config where config_key='need_hand_export'
+</code></pre>
+
+<p>表SYS_CONFIG</p>
+
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:68</p>
+
+<pre><code>select base_rpt_id,model_name,main_type,rpt_en_name from east.base_rpt_info where rpt_name='交易流水'
+</code></pre>
+
+<p>表BASE_RPT_INFO</p>
+
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:73</p>
+
+<pre><code>select count(0) from east.YJBZ_00701_B0349H245010001
+</code></pre>
+
+<p>表YJBZ_00701_B0349H245010001</p>
+
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:78</p>
+
+<pre><code>delete from east.YJBZ_ETL_CHECK where TASK_NAME='交易流水' and TERM='20141231'
+</code></pre>
+
+<p>表YJBZ_ETL_CHECK</p>
+
+<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:108</p>
+
+<pre><code>insert into east.convert_log(log_name,log_message,log_time,log_term) values (?,?,?,?)
+</code></pre>
+
+<p>表CONVERT_LOG</p>
+
+<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:248</p>
+
+<pre><code>SELECT FIELD_EN_NAME,FIELD_TYPE FROM east.BASE_FIELD_INFO FIELD_INFO WHERE FIELD_INFO.BASE_RPT_ID = 'yjbz_00701' ORDER BY FIELD_INFO.ORDER_ID ASC
+</code></pre>
+
+<p>表BASE_FIELD_INFO</p>
+
+<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:269</p>
+
+<pre><code>select count(1) from east.YJBZ_00701_B0349H245010001
+</code></pre>
+
+<p>表YJBZ_00701_B0349H245010001</p>
+
+<p>com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java:438</p>
+
+<pre><code>select HXJYLSH,ZJYLSH,BCXH,JYRQ,YXJGDM,NBJGH,JRXKZH,MXKMBH,JYSJ,JZRQ,JZSJ,JYJGMC,JYZH,JYHM,JYXTMC,DFXH,DFJGMC,DFZH,DFHM,JYJE,ZHYE,JDBZ,XZBZ,BZ,YWLX,JYLX,JYQD,JYJZMC,JYJZH,CZGYH,GYLSH,FHGYH,ZY,ZPZZL,ZPZH,FPZZL,FPZH,CBMBZ,SJC,ZHBZ,KXHBZ,CJRQ
+from YJBZ_00701_B0349H245010001
+where  num&gt;=begIndex and num &lt;+(begIndex+count)
+</code></pre>
+
+<p>表YJBZ_00701_B0349H245010001</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[如何运行应用]]></title>
