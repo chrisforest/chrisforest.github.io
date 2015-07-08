@@ -1,0 +1,27 @@
+---
+layout: post
+title: "在服务器上的mongodb分片"
+date: 2015-07-08 15:52:33 +0800
+comments: true
+categories: 
+---
+
+在服务器上的mongodb分片
+
+######建立mongodb容器
+
+	sudo docker run --name mongodbRouter -d -p 27017:27019 mongo
+	sudo docker run --name mongodbShard1 -d  mongo
+	sudo docker run --name mongodbShard2 -d  mongo
+
+######获得容器ip
+分别为172.17.0.15,172.17.0.16,172.17.0.17
+
+######启动mongodb
+
+	mongos --port 27019 --configdb 172.17.0.15:27017
+	mongo --port 27019
+	sh.addShard("172.17.0.16:27017")
+	sh.addShard("172.17.0.17:27017")
+	sh.enableSharding("fitetl")
+	sh.shardCollection("fitetl.YJBZ_00701_B0349H245010001", {"NUM":1})

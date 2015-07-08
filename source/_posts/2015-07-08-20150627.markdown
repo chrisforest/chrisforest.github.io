@@ -1,0 +1,9 @@
+---
+layout: post
+title: "远程mongodb的运行效果"
+date: 2015-07-08 16:20:30 +0800
+comments: true
+categories: 
+---
+
+未分片的运行耗时37秒，分2片的运行耗时39秒，对比oracle最好的数据是63秒。

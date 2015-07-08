@@ -1,0 +1,37 @@
+---
+layout: post
+title: "20150628"
+date: 2015-07-08 16:23:30 +0800
+comments: true
+categories: 
+---
+
+#####在oracle中插入
+######使用pl/sql developer数据生成器
+参考http://wenku.baidu.com/link?url=ewPnBsCVyDNPG0vJFZHHbNyLMXnKw1eM9-CFoIzY9qS4adhUCjar8DfTB1AP0qjHzMQf5FqBNPmruhJkLv1qh5euDOMuS6IuSWtgE4eIorO&qq-pf-to=pcqq.c2c
+
+######报错ORA-01653
+表空间扩展失败，参考http://www.2cto.com/database/201201/116522.html
+解决方法
+
+	alter tablespace USERS
+	add datafile '/u01/app/oracle/oradata/XE/users2.dbf' size 10240M;
+
+######报错ORA-12953
+超过了允许的最大数据库大小。原因是oracle11g xe版本只支持11g大小用户空间。
+解决方法，暂无。
+
+#####在mongodb中插入
+编写程序模拟数据，采用insert batch操作，每10000条数据一插。对于某些可能有意义的字段采用了枚举，枚举数目为10个。
+
+######报错
+第一次在2363万条数据时报错
+
+	Exception in thread "main" org.springframework.dao.DataAccessResourceFailureException: Operation on server 114.212.189.143:27017 failed; nested exception is com.mongodb.MongoException$Network: Operation on server 114.212.189.143:27017 failed
+第二次在7000多万条时报错。查看数据库，发现只有4000多万数据。我当时怀疑可能mongodb的insert操作是异步的，导致了大量insert堆积，最后丢失数据。
+我决定再插一次，如果还不成功，就分多次插。然而这次容器崩溃了。
+
+######容器崩溃
+shard1和router崩溃了，重启无效。删除容器后新建也无效。
+一开始我怀疑是镜像坏掉了，于是使用袁忠良配过的另一个镜像，那个镜像需要手动启动数据库。手动启动的时候报错journal大小不足3g，无法启动数据库。于是查看，发现服务器存储空间已经耗竭。
+解决方法，暂无，目前先插入5000万条数据。

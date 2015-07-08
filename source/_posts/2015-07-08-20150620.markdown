@@ -9,7 +9,7 @@ categories:
 把客户端也放到远程上了。单位是秒。测到的最小值是63秒。
 测试了一些数据，列代表所少条数据分一线程，行代表一次读多少数据
 
-<table>
+<table class="table table-bordered table-striped table-condensed">
    <tr>
       <td></td>
       <td>500</td>

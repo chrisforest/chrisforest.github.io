@@ -1,0 +1,21 @@
+---
+layout: post
+title: "从oracle到mongodb的数据迁移"
+date: 2015-07-08 15:27:40 +0800
+comments: true
+categories: 
+---
+
+######使用spoon进行数据迁移
+使用etl工具进行数据迁移。关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。
+![image](/images/20150624/1.jpg)
+然后分别编辑输入输出，编辑oracle数据库:
+![image](/images/20150624/2.jpg)
+编辑mongoDB数据库:
+![image](/images/20150624/3.jpg)
+######报错
+运行到84万多条数据的时候就报错了：
+![image](/images/20150624/4.png)
+一开始我以为是mongodb的cursor关闭了，因为看文档说mongodb的cursor默认十分钟关闭，而spoon迁移大概10分钟的时候停了。因为spoon没有改相关项的选项，所以后来打算自己写程序，然而自己写程序后，发现用不到mongodb的cursor。而且也在83万多数据的时候出问题，卡住不动了。
+后来可能的原因是数据一次读取过多，因为2次出错读取的数据差不多多（83万和84万），所以下一步会尝试分多次读取数据，比如50万数据一读。
+最后找到问题了，是mongodb32位存储空间不足，解决方法是在远程服务器上运行64位mongodb。迁移用时约38分钟。
