@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>exportData使用的sql查询 - My Octopress Blog</title>
+  <title>远程mongodb的运行效果 - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56 from EtlTaskInfo e where e.taskId= 61 表ETL_TASK_INFO com/fitech/model/etl/service/ &hellip;">
+  <meta name="description" content="未分片的运行耗时37秒，分2片的运行耗时39秒，对比oracle最好的数据是63秒。
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150616/">
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150627/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -68,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">exportData使用的sql查询</h1>
+      <h1 class="entry-title">远程mongodb的运行效果</h1>
     
     
       <p class="meta">
@@ -77,77 +78,14 @@
 
 
 
-<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T16:20:30+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:20 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56</p>
-
-<pre><code>from EtlTaskInfo e where e.taskId= 61
-</code></pre>
-
-<p>表ETL_TASK_INFO</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:59</p>
-
-<pre><code>select config_value from east.sys_config where config_key='need_hand_export'
-</code></pre>
-
-<p>表SYS_CONFIG</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:68</p>
-
-<pre><code>select base_rpt_id,model_name,main_type,rpt_en_name from east.base_rpt_info where rpt_name='交易流水'
-</code></pre>
-
-<p>表BASE_RPT_INFO</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:73</p>
-
-<pre><code>select count(0) from east.YJBZ_00701_B0349H245010001
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:78</p>
-
-<pre><code>delete from east.YJBZ_ETL_CHECK where TASK_NAME='交易流水' and TERM='20141231'
-</code></pre>
-
-<p>表YJBZ_ETL_CHECK</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:108</p>
-
-<pre><code>insert into east.convert_log(log_name,log_message,log_time,log_term) values (?,?,?,?)
-</code></pre>
-
-<p>表CONVERT_LOG</p>
-
-<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:248</p>
-
-<pre><code>SELECT FIELD_EN_NAME,FIELD_TYPE FROM east.BASE_FIELD_INFO FIELD_INFO WHERE FIELD_INFO.BASE_RPT_ID = 'yjbz_00701' ORDER BY FIELD_INFO.ORDER_ID ASC
-</code></pre>
-
-<p>表BASE_FIELD_INFO</p>
-
-<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:269</p>
-
-<pre><code>select count(1) from east.YJBZ_00701_B0349H245010001
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
-
-<p>com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java:438</p>
-
-<pre><code>select HXJYLSH,ZJYLSH,BCXH,JYRQ,YXJGDM,NBJGH,JRXKZH,MXKMBH,JYSJ,JZRQ,JZSJ,JYJGMC,JYZH,JYHM,JYXTMC,DFXH,DFJGMC,DFZH,DFHM,JYJE,ZHYE,JDBZ,XZBZ,BZ,YWLX,JYLX,JYQD,JYJZMC,JYJZH,CZGYH,GYLSH,FHGYH,ZY,ZPZZL,ZPZH,FPZZL,FPZH,CBMBZ,SJC,ZHBZ,KXHBZ,CJRQ
-from YJBZ_00701_B0349H245010001
-where  num&gt;=begIndex and num &lt;+(begIndex+count)
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
+<div class="entry-content"><p>未分片的运行耗时37秒，分2片的运行耗时39秒，对比oracle最好的数据是63秒。</p>
 </div>
 
 
@@ -163,7 +101,7 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
 
 
 
-<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T16:20:30+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:20 pm</span></time>
       
 
 
@@ -171,7 +109,7 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150616/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150616/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150627/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150627/" >Tweet</a>
   
   
   
@@ -180,10 +118,10 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/07/20150613/" title="Previous Post: 如何运行应用">&laquo; 如何运行应用</a>
+        <a class="basic-alignment left" href="/blog/2015/07/08/20150626/" title="Previous Post: 在服务器上的mongodb分片">&laquo; 在服务器上的mongodb分片</a>
       
       
-        <a class="basic-alignment right" href="/blog/2015/07/08/20150618/" title="Next Post: 在远程服务器上运行exportData">在远程服务器上运行exportData &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/07/08/20150628/" title="Next Post: 20150628">20150628 &raquo;</a>
       
     </p>
   </footer>

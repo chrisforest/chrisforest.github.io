@@ -101,11 +101,11 @@ grant dba to east;
 grant dba to etl;
 shutdown immediate
 STARTUP MOUNT
-ALTER SYSTEM ENABLE RESTRICTED SESSION
-ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
-ALTER SYSTEM SET AQ_TM_PROCESSES=0
-ALTER DATABASE OPEN
-ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
+ALTER SYSTEM ENABLE RESTRICTED SESSION;
+ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;
+ALTER SYSTEM SET AQ_TM_PROCESSES=0;
+ALTER DATABASE OPEN;
+ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK;
 SHUTDOWN IMMEDIATE
 STARTUP
 </code></pre>
@@ -115,7 +115,7 @@ STARTUP
 <p>open 114.212.189.143 32772</p>
 
 <pre><code>put 路径\east.dmp
-put 路径\east.dmp
+put 路径\etl.dmp
 </code></pre>
 
 <h5>将应用放到服务器上</h5>
@@ -198,23 +198,23 @@ dwr.jar中无用的xsd定义覆盖了有用的定义，导致需要上网加载x
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/07/08/20150628/">20150628</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150627/">远程mongodb的运行效果</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150626/">在服务器上的mongodb分片</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/08/20150624/">从oracle到mongodb的数据迁移</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/07/08/20150620/">应用数据库都在远程的profile</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/07/08/20150619/">应用在本地数据库在远程的profile</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/07/08/20150618/">在远程服务器上运行exportData</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/07/08/20150616/">exportData使用的sql查询</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/07/07/20150613/">如何运行应用</a>
       </li>
     
   </ul>

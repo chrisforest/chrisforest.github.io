@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>exportData使用的sql查询 - My Octopress Blog</title>
+  <title>从oracle到mongodb的数据迁移 - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56 from EtlTaskInfo e where e.taskId= 61 表ETL_TASK_INFO com/fitech/model/etl/service/ &hellip;">
+  <meta name="description" content="使用spoon进行数据迁移 使用etl工具进行数据迁移。关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。 然后分别编辑输入输出，编辑oracle数据库: 编辑mongoDB数据库: 报错 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150616/">
+  <link rel="canonical" href="http://chrisforest.github.io/blog/2015/07/08/20150624/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -68,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">exportData使用的sql查询</h1>
+      <h1 class="entry-title">从oracle到mongodb的数据迁移</h1>
     
     
       <p class="meta">
@@ -77,77 +77,29 @@
 
 
 
-<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T15:27:40+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:27 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:56</p>
+<div class="entry-content"><h6>使用spoon进行数据迁移</h6>
 
-<pre><code>from EtlTaskInfo e where e.taskId= 61
-</code></pre>
+<p>使用etl工具进行数据迁移。关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。
+<img src="/images/20150624/1.jpg" alt="image" />
+然后分别编辑输入输出，编辑oracle数据库:
+<img src="/images/20150624/2.jpg" alt="image" />
+编辑mongoDB数据库:
+<img src="/images/20150624/3.jpg" alt="image" /></p>
 
-<p>表ETL_TASK_INFO</p>
+<h6>报错</h6>
 
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:59</p>
-
-<pre><code>select config_value from east.sys_config where config_key='need_hand_export'
-</code></pre>
-
-<p>表SYS_CONFIG</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:68</p>
-
-<pre><code>select base_rpt_id,model_name,main_type,rpt_en_name from east.base_rpt_info where rpt_name='交易流水'
-</code></pre>
-
-<p>表BASE_RPT_INFO</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:73</p>
-
-<pre><code>select count(0) from east.YJBZ_00701_B0349H245010001
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:78</p>
-
-<pre><code>delete from east.YJBZ_ETL_CHECK where TASK_NAME='交易流水' and TERM='20141231'
-</code></pre>
-
-<p>表YJBZ_ETL_CHECK</p>
-
-<p>com/fitech/model/etl/service/hsyh/ETLConductExportService.java:108</p>
-
-<pre><code>insert into east.convert_log(log_name,log_message,log_time,log_term) values (?,?,?,?)
-</code></pre>
-
-<p>表CONVERT_LOG</p>
-
-<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:248</p>
-
-<pre><code>SELECT FIELD_EN_NAME,FIELD_TYPE FROM east.BASE_FIELD_INFO FIELD_INFO WHERE FIELD_INFO.BASE_RPT_ID = 'yjbz_00701' ORDER BY FIELD_INFO.ORDER_ID ASC
-</code></pre>
-
-<p>表BASE_FIELD_INFO</p>
-
-<p>com/fitech/model/etl/service/hsyh/FitechRpt/service/impl/RptOprServiceImpl.java:269</p>
-
-<pre><code>select count(1) from east.YJBZ_00701_B0349H245010001
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
-
-<p>com\fitech\model\etl\service\hsyh\FitechRpt\util\RptUtil.java:438</p>
-
-<pre><code>select HXJYLSH,ZJYLSH,BCXH,JYRQ,YXJGDM,NBJGH,JRXKZH,MXKMBH,JYSJ,JZRQ,JZSJ,JYJGMC,JYZH,JYHM,JYXTMC,DFXH,DFJGMC,DFZH,DFHM,JYJE,ZHYE,JDBZ,XZBZ,BZ,YWLX,JYLX,JYQD,JYJZMC,JYJZH,CZGYH,GYLSH,FHGYH,ZY,ZPZZL,ZPZH,FPZZL,FPZH,CBMBZ,SJC,ZHBZ,KXHBZ,CJRQ
-from YJBZ_00701_B0349H245010001
-where  num&gt;=begIndex and num &lt;+(begIndex+count)
-</code></pre>
-
-<p>表YJBZ_00701_B0349H245010001</p>
+<p>运行到84万多条数据的时候就报错了：
+<img src="/images/20150624/4.png" alt="image" />
+一开始我以为是mongodb的cursor关闭了，因为看文档说mongodb的cursor默认十分钟关闭，而spoon迁移大概10分钟的时候停了。因为spoon没有改相关项的选项，所以后来打算自己写程序，然而自己写程序后，发现用不到mongodb的cursor。而且也在83万多数据的时候出问题，卡住不动了。
+后来可能的原因是数据一次读取过多，因为2次出错读取的数据差不多多（83万和84万），所以下一步会尝试分多次读取数据，比如50万数据一读。
+最后找到问题了，是mongodb32位存储空间不足，解决方法是在远程服务器上运行64位mongodb。迁移用时约38分钟。</p>
 </div>
 
 
@@ -163,7 +115,7 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
 
 
 
-<time class='entry-date' datetime='2015-07-08T13:33:18+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>1:33 pm</span></time>
+<time class='entry-date' datetime='2015-07-08T15:27:40+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:27 pm</span></time>
       
 
 
@@ -171,7 +123,7 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150616/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150616/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://chrisforest.github.io/blog/2015/07/08/20150624/" data-via="" data-counturl="http://chrisforest.github.io/blog/2015/07/08/20150624/" >Tweet</a>
   
   
   
@@ -180,10 +132,10 @@ where  num&gt;=begIndex and num &lt;+(begIndex+count)
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2015/07/07/20150613/" title="Previous Post: 如何运行应用">&laquo; 如何运行应用</a>
+        <a class="basic-alignment left" href="/blog/2015/07/08/20150620/" title="Previous Post: 应用数据库都在远程的profile">&laquo; 应用数据库都在远程的profile</a>
       
       
-        <a class="basic-alignment right" href="/blog/2015/07/08/20150618/" title="Next Post: 在远程服务器上运行exportData">在远程服务器上运行exportData &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2015/07/08/20150626/" title="Next Post: 在服务器上的mongodb分片">在服务器上的mongodb分片 &raquo;</a>
       
     </p>
   </footer>

@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://chrisforest.github.io/atom.xml" rel="self"/>
   <link href="http://chrisforest.github.io/"/>
-  <updated>2015-07-08T15:13:13+08:00</updated>
+  <updated>2015-07-08T19:18:58+08:00</updated>
   <id>http://chrisforest.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -14,6 +14,116 @@
 
   
   <entry>
+    <title type="html"><![CDATA[20150628]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/08/20150628/"/>
+    <updated>2015-07-08T16:23:30+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/08/20150628</id>
+    <content type="html"><![CDATA[<h5>在oracle中插入</h5>
+
+<h6>使用pl/sql developer数据生成器</h6>
+
+<p>参考<a href="http://wenku.baidu.com/link?url=ewPnBsCVyDNPG0vJFZHHbNyLMXnKw1eM9-CFoIzY9qS4adhUCjar8DfTB1AP0qjHzMQf5FqBNPmruhJkLv1qh5euDOMuS6IuSWtgE4eIorO&amp;qq-pf-to=pcqq.c2c">http://wenku.baidu.com/link?url=ewPnBsCVyDNPG0vJFZHHbNyLMXnKw1eM9-CFoIzY9qS4adhUCjar8DfTB1AP0qjHzMQf5FqBNPmruhJkLv1qh5euDOMuS6IuSWtgE4eIorO&amp;qq-pf-to=pcqq.c2c</a></p>
+
+<h6>报错ORA-01653</h6>
+
+<p>表空间扩展失败，参考<a href="http://www.2cto.com/database/201201/116522.html">http://www.2cto.com/database/201201/116522.html</a>
+解决方法</p>
+
+<pre><code>alter tablespace USERS
+add datafile '/u01/app/oracle/oradata/XE/users2.dbf' size 10240M;
+</code></pre>
+
+<h6>报错ORA-12953</h6>
+
+<p>超过了允许的最大数据库大小。原因是oracle11g xe版本只支持11g大小用户空间。
+解决方法，暂无。</p>
+
+<h5>在mongodb中插入</h5>
+
+<p>编写程序模拟数据，采用insert batch操作，每10000条数据一插。对于某些可能有意义的字段采用了枚举，枚举数目为10个。</p>
+
+<h6>报错</h6>
+
+<p>第一次在2363万条数据时报错</p>
+
+<pre><code>Exception in thread "main" org.springframework.dao.DataAccessResourceFailureException: Operation on server 114.212.189.143:27017 failed; nested exception is com.mongodb.MongoException$Network: Operation on server 114.212.189.143:27017 failed
+</code></pre>
+
+<p>第二次在7000多万条时报错。查看数据库，发现只有4000多万数据。我当时怀疑可能mongodb的insert操作是异步的，导致了大量insert堆积，最后丢失数据。
+我决定再插一次，如果还不成功，就分多次插。然而这次容器崩溃了。</p>
+
+<h6>容器崩溃</h6>
+
+<p>shard1和router崩溃了，重启无效。删除容器后新建也无效。
+一开始我怀疑是镜像坏掉了，于是使用袁忠良配过的另一个镜像，那个镜像需要手动启动数据库。手动启动的时候报错journal大小不足3g，无法启动数据库。于是查看，发现服务器存储空间已经耗竭。
+解决方法，暂无，目前先插入5000万条数据。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[远程mongodb的运行效果]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/08/20150627/"/>
+    <updated>2015-07-08T16:20:30+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/08/20150627</id>
+    <content type="html"><![CDATA[<p>未分片的运行耗时37秒，分2片的运行耗时39秒，对比oracle最好的数据是63秒。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[在服务器上的mongodb分片]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/08/20150626/"/>
+    <updated>2015-07-08T15:52:33+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/08/20150626</id>
+    <content type="html"><![CDATA[<p>在服务器上的mongodb分片</p>
+
+<h6>建立mongodb容器</h6>
+
+<pre><code>sudo docker run --name mongodbRouter -d -p 27017:27019 mongo
+sudo docker run --name mongodbShard1 -d  mongo
+sudo docker run --name mongodbShard2 -d  mongo
+</code></pre>
+
+<h6>获得容器ip</h6>
+
+<p>分别为172.17.0.15,172.17.0.16,172.17.0.17</p>
+
+<h6>启动mongodb</h6>
+
+<pre><code>mongos --port 27019 --configdb 172.17.0.15:27017
+mongo --port 27019
+sh.addShard("172.17.0.16:27017")
+sh.addShard("172.17.0.17:27017")
+sh.enableSharding("fitetl")
+sh.shardCollection("fitetl.YJBZ_00701_B0349H245010001", {"NUM":1})
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[从oracle到mongodb的数据迁移]]></title>
+    <link href="http://chrisforest.github.io/blog/2015/07/08/20150624/"/>
+    <updated>2015-07-08T15:27:40+08:00</updated>
+    <id>http://chrisforest.github.io/blog/2015/07/08/20150624</id>
+    <content type="html"><![CDATA[<h6>使用spoon进行数据迁移</h6>
+
+<p>使用etl工具进行数据迁移。关于spoon的用法，首先搭建如图的结构。表输入为oracle数据库表，mongoDB output为mongoDB数据库的输出。
+<img src="http://chrisforest.github.io/images/20150624/1.jpg" alt="image" />
+然后分别编辑输入输出，编辑oracle数据库:
+<img src="http://chrisforest.github.io/images/20150624/2.jpg" alt="image" />
+编辑mongoDB数据库:
+<img src="http://chrisforest.github.io/images/20150624/3.jpg" alt="image" /></p>
+
+<h6>报错</h6>
+
+<p>运行到84万多条数据的时候就报错了：
+<img src="http://chrisforest.github.io/images/20150624/4.png" alt="image" />
+一开始我以为是mongodb的cursor关闭了，因为看文档说mongodb的cursor默认十分钟关闭，而spoon迁移大概10分钟的时候停了。因为spoon没有改相关项的选项，所以后来打算自己写程序，然而自己写程序后，发现用不到mongodb的cursor。而且也在83万多数据的时候出问题，卡住不动了。
+后来可能的原因是数据一次读取过多，因为2次出错读取的数据差不多多（83万和84万），所以下一步会尝试分多次读取数据，比如50万数据一读。
+最后找到问题了，是mongodb32位存储空间不足，解决方法是在远程服务器上运行64位mongodb。迁移用时约38分钟。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[应用数据库都在远程的profile]]></title>
     <link href="http://chrisforest.github.io/blog/2015/07/08/20150620/"/>
     <updated>2015-07-08T15:04:50+08:00</updated>
@@ -21,7 +131,7 @@
     <content type="html"><![CDATA[<p>把客户端也放到远程上了。单位是秒。测到的最小值是63秒。
 测试了一些数据，列代表所少条数据分一线程，行代表一次读多少数据</p>
 
-<table>
+<table class="table table-bordered table-striped table-condensed">
    <tr>
       <td></td>
       <td>500</td>
@@ -201,7 +311,7 @@
     <id>http://chrisforest.github.io/blog/2015/07/08/20150619</id>
     <content type="html"><![CDATA[<h6>采用插装log输出</h6>
 
-<p>在sql语句和报文生成的前后插入了计时语句，这是某次操作的结果总结。
+<p>在sql语句和报文生成的前后插入了计时语句，log编写参考了<a href="http://blog.csdn.net/seven_cm/article/details/26849821">http://blog.csdn.net/seven_cm/article/details/26849821</a> ，这是某次操作的结果总结。
 总共耗时386秒
 其中超过1秒的操作
 1、    对YJBZ_00701_B0349H245010001计数。由于表超过3M行，总共耗时8.630秒。
@@ -244,11 +354,11 @@ grant dba to east;
 grant dba to etl;
 shutdown immediate
 STARTUP MOUNT
-ALTER SYSTEM ENABLE RESTRICTED SESSION
-ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
-ALTER SYSTEM SET AQ_TM_PROCESSES=0
-ALTER DATABASE OPEN
-ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
+ALTER SYSTEM ENABLE RESTRICTED SESSION;
+ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;
+ALTER SYSTEM SET AQ_TM_PROCESSES=0;
+ALTER DATABASE OPEN;
+ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK;
 SHUTDOWN IMMEDIATE
 STARTUP
 </code></pre>
@@ -258,7 +368,7 @@ STARTUP
 <p>open 114.212.189.143 32772</p>
 
 <pre><code>put 路径\east.dmp
-put 路径\east.dmp
+put 路径\etl.dmp
 </code></pre>
 
 <h5>将应用放到服务器上</h5>
@@ -406,11 +516,11 @@ ORA-12899: 列 "JACKEYJ"."JK_REGISTER"."OPNAME" 的值太大 (实际值: 21, 最
 
 <pre><code>SHUTDOWN IMMEDIATE 
 STARTUP MOUNT
-ALTER SYSTEM ENABLE RESTRICTED SESSION
-ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0
-ALTER SYSTEM SET AQ_TM_PROCESSES=0
-ALTER DATABASE OPEN
-ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK
+ALTER SYSTEM ENABLE RESTRICTED SESSION;
+ALTER SYSTEM SET JOB_QUEUE_PROCESSES=0;
+ALTER SYSTEM SET AQ_TM_PROCESSES=0;
+ALTER DATABASE OPEN;
+ALTER DATABASE CHARACTER SET INTERNAL_USE ZHS16GBK;
 SHUTDOWN IMMEDIATE
 STARTUP
 </code></pre>
